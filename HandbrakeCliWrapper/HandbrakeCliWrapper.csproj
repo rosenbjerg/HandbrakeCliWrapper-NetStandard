@@ -1,0 +1,20 @@
+<Project Sdk="Microsoft.NET.Sdk">
+
+  <PropertyGroup>
+    <TargetFramework>netstandard2.0</TargetFramework>
+    <AssemblyName>HandbrakeCliWrapper</AssemblyName>
+    <RootNamespace>HandbrakeCliWrapper</RootNamespace>
+    <PackageId>HandbrakeCliWrapper</PackageId>
+    <GeneratePackageOnBuild>true</GeneratePackageOnBuild>
+    <Authors>Malte Rosenbjerg</Authors>
+    <Company>Rosenbjerg Softworks</Company>
+    <Product>A Handbrake CLI wrapper</Product>
+    <Description>HandbrakeCLI wrapper with awaitable asyncronous conversion´.</Description>
+    <Copyright>2017</Copyright>
+  </PropertyGroup>
+
+  <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Debug|AnyCPU'">
+    <DocumentationFile></DocumentationFile>
+  </PropertyGroup>
+
+</Project>
