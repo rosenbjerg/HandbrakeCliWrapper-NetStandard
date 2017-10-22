@@ -9,8 +9,10 @@
     <Authors>Malte Rosenbjerg</Authors>
     <Company>Rosenbjerg Softworks</Company>
     <Product>A Handbrake CLI wrapper</Product>
-    <Description>HandbrakeCLI wrapper with awaitable asyncronous conversion´.</Description>
+    <Description>HandbrakeCLI wrapper with awaitable asyncronous conversion. The status of a conversion is made available</Description>
     <Copyright>2017</Copyright>
+    <PackageLicenseUrl>https://github.com/rosenbjerg/HandbrakeCliWrapper-NetStandard/blob/master/LICENSE</PackageLicenseUrl>
+    <PackageProjectUrl>https://github.com/rosenbjerg/HandbrakeCliWrapper-NetStandard</PackageProjectUrl>
   </PropertyGroup>
 
   <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Debug|AnyCPU'">

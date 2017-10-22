@@ -6,7 +6,7 @@
   </PropertyGroup>
 
   <ItemGroup>
-    <ProjectReference Include="..\HandbrakeCLIwrapper\HandbrakeCliWrapper.csproj" />
+    <ProjectReference Include="..\HandbrakeCliWrapper\HandbrakeCliWrapper.csproj" />
   </ItemGroup>
 
 </Project>
