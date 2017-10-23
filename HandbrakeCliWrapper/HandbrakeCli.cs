@@ -22,6 +22,7 @@ namespace HandbrakeCLIwrapper
 
         private readonly string _hbCliPath;
         private Process _process;
+        private string _out;
 
         /// <summary>
         /// Constructor for 
@@ -47,7 +48,7 @@ namespace HandbrakeCLIwrapper
         /// <param name="overwriteExisting">Whether to overwrite existing files in outputDirectory</param>
         /// <param name="removeOriginalAfterSuccessful">Whether to remove the input file after successful transcoding</param>
         /// <returns>Awaitable task for the conversion</returns>
-        public async Task Convert(HandbrakeCliConfigBuilder config, string inputFile, string outputDirectory,
+        public async Task Transcode(HandbrakeCliConfigBuilder config, string inputFile, string outputDirectory,
             string outputFilename = null, bool overwriteExisting = false, bool removeOriginalAfterSuccessful = false)
         {
             if (!File.Exists(inputFile))
@@ -64,7 +65,6 @@ namespace HandbrakeCLIwrapper
             
             inputFile = Path.GetFullPath(inputFile);
             outputFilename = Path.Combine(Path.GetFullPath(outputDirectory), outputFilename);
-
             if (File.Exists(outputFilename) && !overwriteExisting) 
                 throw new HandbrakeCliWrapperException($"The file '{outputFilename}' already exists. Set overwriteExisting to true to overwrite");
 
@@ -84,8 +84,9 @@ namespace HandbrakeCLIwrapper
             }
             catch (Exception e)
             {
-                throw new HandbrakeCliWrapperException("An error occured when started the HandbrakeCLI process. See inner exception", e);
+                throw new HandbrakeCliWrapperException("An error occured when starting the HandbrakeCLI process. See inner exception", e);
             }
+            _process = null;
             if (success)
             {
                 DoneTranscoding();
@@ -104,7 +105,30 @@ namespace HandbrakeCLIwrapper
             else
                 ErrorTranscoding();
         }
-        
+
+        /// <summary>
+        /// Stops the current trancode job by killing the HandbrakeCLI process and then deleting the incomplete outputfile
+        /// </summary>
+        public void StopTranscoding()
+        {
+            if (_process == null)
+                return;
+
+            if (!_process.HasExited)
+                _process.Kill();
+
+            if (!File.Exists(_out))
+                return;
+
+            try
+            {
+                File.Delete(_out);
+            }
+            catch
+            {
+            }
+        }
+
         /// <summary>
         /// Invoked when a conversion has been completed succesfully
         /// </summary>
@@ -120,6 +144,7 @@ namespace HandbrakeCLIwrapper
 
         private void StartedTranscoding(string inputFile, string outputFilename)
         {
+            _out = outputFilename;
             Status.Converting = true;
             Status.InputFile = Path.GetFileName(inputFile);
             Status.OutputFile = Path.GetFileName(outputFilename);
@@ -132,6 +157,7 @@ namespace HandbrakeCLIwrapper
 
         private void DoneTranscoding()
         {
+            _out = "";
             var inp = Status.InputFile;
             Status.Converting = false;
             Status.InputFile = "";
@@ -145,6 +171,7 @@ namespace HandbrakeCLIwrapper
 
         private void ErrorTranscoding()
         {
+            _out = "";
             var inp = Status.InputFile;
             Status.Converting = false;
             Status.InputFile = "";
@@ -161,20 +188,20 @@ namespace HandbrakeCLIwrapper
             if (string.IsNullOrEmpty(dataReceivedEventArgs.Data))
                 return;
             var match = HandbrakeOutputRegex.Match(dataReceivedEventArgs.Data);
-            if (match.Success)
-            {
-                Status.Percentage =
-                    float.Parse(match.Groups[1].Value, NumberStyles.Float, CultureInfo.InvariantCulture);
-                if (match.Groups[2].Success)
-                {
-                    Status.CurrentFps =
-                        float.Parse(match.Groups[3].Value, NumberStyles.Float, CultureInfo.InvariantCulture);
-                    Status.AverageFps =
-                        float.Parse(match.Groups[4].Value, NumberStyles.Float, CultureInfo.InvariantCulture);
-                    Status.Estimated =
-                        TimeSpan.ParseExact(match.Groups[5].Value, "h\\hm\\ms\\s", CultureInfo.InvariantCulture);
-                }
-            }
+            if (!match.Success)
+                return;
+
+            Status.Percentage =
+                float.Parse(match.Groups[1].Value, NumberStyles.Float, CultureInfo.InvariantCulture);
+            if (!match.Groups[2].Success)
+                return;
+
+            Status.CurrentFps =
+                float.Parse(match.Groups[3].Value, NumberStyles.Float, CultureInfo.InvariantCulture);
+            Status.AverageFps =
+                float.Parse(match.Groups[4].Value, NumberStyles.Float, CultureInfo.InvariantCulture);
+            Status.Estimated =
+                TimeSpan.ParseExact(match.Groups[5].Value, "h\\hm\\ms\\s", CultureInfo.InvariantCulture);
         }
 
         private static async Task<bool> AwaitProcess(Process process)

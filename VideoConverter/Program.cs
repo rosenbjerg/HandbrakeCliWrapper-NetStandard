@@ -35,7 +35,7 @@ namespace VideoConverter
             var config = new HandbrakeCliConfigBuilder();
             foreach (var file in files)
             {
-                await hb.Convert(config, file, output, overwriteExisting: true);
+                await hb.Transcode(config, file, output, overwriteExisting: true);
                 _current++;
             }
         }

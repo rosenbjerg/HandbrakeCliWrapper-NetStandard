@@ -104,36 +104,38 @@ namespace HandbrakeCLIwrapper
         public string Build()
         {
             var sb = new StringBuilder();
-            sb.Append($"-f {Format} ");
-            if (MaxHeight != -1)
-                sb.Append($"maxHeight {MaxHeight} ");
-            if (MaxWidth != -1)
-                sb.Append($"maxWidth {MaxWidth} ");
+            sb.Append($"--format {Format} ");
+            if (MaxHeight > 0)
+                sb.Append($"--maxHeight {MaxHeight} ");
+            if (MaxWidth > 0)
+                sb.Append($"--maxWidth {MaxWidth} ");
             if (WebOptimize)
                 sb.Append("--optimize ");
 
             sb.Append($"--modulus {Modulus} ");
-            sb.Append($"--{Anamorphic.ToString().Replace("_", "-")} ");
-            sb.Append($"-e {Encoder} ");
-            sb.Append($"-q {VideoQuality} ");
+            sb.Append($"--{Anamorphic.Formatted()} ");
+            sb.Append($"--encoder {Encoder} ");
+            sb.Append($"--quality {VideoQuality} ");
             sb.Append($"--{FrameRateSetting} ");
-            sb.Append($"-r {FrameRate} ");
-            sb.Append($"-E {AudioEncoder.ToString().Replace("__", ":")} ");
-            sb.Append($"--audio-copy-mask {string.Join(",", AudioCopyMask)} ");
-            sb.Append($"--audio-fallback {AudioEncoderFallback} ");
-            sb.Append($"--mixdown {Mixdown.ToString().TrimStart('_').Replace("__", ".")} ");
-            sb.Append($"-R {AudioSampleRate} ");
-            sb.Append($"-B {AudioBitrate} ");
-            sb.Append($"--{AudioTracks.ToString().Replace("_", "-")} ");
+            sb.Append($"--rate {FrameRate} ");
+            sb.Append($"--aencoder {AudioEncoder.Formatted()} ");
+            if (AudioEncoder == AudioEncoder.copy)
+                sb.Append($"--audio-copy-mask {AudioCopyMask.Formatted()} ");
+            if (AudioEncoder.ToString().StartsWith("copy"))
+                sb.Append($"--audio-fallback {AudioEncoderFallback.Formatted()} ");
+            sb.Append($"--mixdown {Mixdown.Formatted()} ");
+            sb.Append($"--arate {AudioSampleRate.Formatted()} ");
+            sb.Append($"--ab {AudioBitrate} ");
+            sb.Append($"--{AudioTracks.Formatted()} ");
             sb.Append($"--gain {AudioGain} ");
-            sb.Append($"-s none ");
+            sb.Append($"--subtitle none ");
             if (TwoPass)
             {
-                sb.Append("-2 ");
-                if (TurboTwoPass)
-                    sb.Append("-T ");
+                sb.Append("--two-pass ");
+                if (TurboTwoPass && (Encoder == Encoder.x264 || Encoder == Encoder.x265))
+                    sb.Append("--turbo ");
             }
-            sb.Append($"--encoder-level {EncoderLevel.ToString().TrimStart('_').Replace("_", ".")} ");
+            sb.Append($"--encoder-level {EncoderLevel.Formatted()} ");
             sb.Append("--verbose 0 ");
             return sb.ToString();
         }

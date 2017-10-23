@@ -13,6 +13,8 @@
     <Copyright>2017</Copyright>
     <PackageLicenseUrl>https://github.com/rosenbjerg/HandbrakeCliWrapper-NetStandard/blob/master/LICENSE</PackageLicenseUrl>
     <PackageProjectUrl>https://github.com/rosenbjerg/HandbrakeCliWrapper-NetStandard</PackageProjectUrl>
+    <Version>1.0.1</Version>
+    <PackageReleaseNotes>Added method to stop current transcoding job</PackageReleaseNotes>
   </PropertyGroup>
 
   <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Debug|AnyCPU'">
