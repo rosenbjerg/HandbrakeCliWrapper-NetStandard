@@ -28,6 +28,10 @@ namespace VideoConverter
 
         private static async void Run(List<string> files, string output)
         {
+            if (!File.Exists("./HandbrakeCLI.exe"))
+            {
+                throw new Exception("Missing ./HandbrakeCLI.exe");
+            }
             var hb = new HandbrakeCli("./HandbrakeCLI.exe");
             _total = files.Count;
             _current = 0;
