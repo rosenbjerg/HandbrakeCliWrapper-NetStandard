@@ -1,13 +1,14 @@
 ﻿using System.Collections.Generic;
 using System.Text;
 
-namespace HandbrakeCLIwrapper
+namespace HandbrakeCliWrapper
 {
     
     /// <summary>
-    /// Configuration builder for the Handbrake CLI
+    /// Encoding configuration for HandbrakeCLI
+    /// The ToString method is overridden to return a string that can be used as argument to HandbrakeCLI
     /// </summary>
-    public class HandbrakeCliConfigBuilder
+    public class HandbrakeConfiguration
     {
         /// <summary>
         /// Output container format
@@ -58,7 +59,7 @@ namespace HandbrakeCLIwrapper
         /// The list of audio codecs to copy rather than transcode
         /// </summary>
         public List<AudioCopyMask> AudioCopyMask { get; set; } =
-            new List<AudioCopyMask> {HandbrakeCLIwrapper.AudioCopyMask.aac};
+            new List<AudioCopyMask> {HandbrakeCliWrapper.AudioCopyMask.aac};
         /// <summary>
         /// The fallback audio encoder.
         /// The encoder to use for audio tracks that needs to be transcoded when using the 'copy' settings for the audio encoder.
@@ -101,7 +102,7 @@ namespace HandbrakeCLIwrapper
         /// Builds an argument string from the settings
         /// </summary>
         /// <returns>A string to be used as argument to Handbrake CLI</returns>
-        public string Build()
+        public override string ToString()
         {
             var sb = new StringBuilder();
             sb.Append($"--format {Format} ");

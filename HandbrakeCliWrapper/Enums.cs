@@ -1,4 +1,4 @@
-﻿namespace HandbrakeCLIwrapper
+﻿namespace HandbrakeCliWrapper
 {
     public enum EncoderLevel
     {

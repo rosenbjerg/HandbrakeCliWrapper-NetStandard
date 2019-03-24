@@ -1,6 +1,6 @@
 ﻿using System.Collections.Generic;
 
-namespace HandbrakeCLIwrapper
+namespace HandbrakeCliWrapper
 {
     static class EnumFormatter
     {

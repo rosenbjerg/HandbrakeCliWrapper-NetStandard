@@ -1,8 +1,8 @@
 ﻿using System;
 
-namespace HandbrakeCLIwrapper
+namespace HandbrakeCliWrapper
 {
-    public class ConversionStatus
+    public class HandbrakeConversionStatus
     {
         /// <summary>
         /// Whether a conversion is going on at the moment

@@ -1,4 +1,4 @@
-<Project Sdk="Microsoft.NET.Sdk">
+﻿<Project Sdk="Microsoft.NET.Sdk">
 
   <PropertyGroup>
     <TargetFramework>netstandard2.0</TargetFramework>
@@ -10,11 +10,16 @@
     <Company>Rosenbjerg Softworks</Company>
     <Product>A Handbrake CLI wrapper</Product>
     <Description>HandbrakeCLI wrapper with awaitable asyncronous conversion. The status of a conversion is made available</Description>
-    <Copyright>2017</Copyright>
+    <Copyright>2019</Copyright>
     <PackageLicenseUrl>https://github.com/rosenbjerg/HandbrakeCliWrapper-NetStandard/blob/master/LICENSE</PackageLicenseUrl>
     <PackageProjectUrl>https://github.com/rosenbjerg/HandbrakeCliWrapper-NetStandard</PackageProjectUrl>
     <Version>1.0.1</Version>
-    <PackageReleaseNotes>Added method to stop current transcoding job</PackageReleaseNotes>
+    <PackageReleaseNotes>Changed API</PackageReleaseNotes>
+    <PackageVersion>2.0.0</PackageVersion>
+    <Title>HandbrakeCLI wrapper</Title>
+    <RepositoryUrl>https://github.com/rosenbjerg/HandbrakeCliWrapper-NetStandard</RepositoryUrl>
+    <RepositoryType>GitHub</RepositoryType>
+    <PackageTags>handbrake</PackageTags>
   </PropertyGroup>
 
   <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Debug|AnyCPU'">

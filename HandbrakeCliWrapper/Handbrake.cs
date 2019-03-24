@@ -5,12 +5,12 @@ using System.IO;
 using System.Text.RegularExpressions;
 using System.Threading.Tasks;
 
-namespace HandbrakeCLIwrapper
+namespace HandbrakeCliWrapper
 {
     /// <summary>
     ///     A wrapper for Handbrake CLI with awaitable asyncronous conversion and
     /// </summary>
-    public class HandbrakeCli
+    public class Handbrake
     {
         private static readonly Regex HandbrakeOutputRegex =
             new Regex(
@@ -27,8 +27,8 @@ namespace HandbrakeCLIwrapper
         /// <summary>
         /// Constructor for 
         /// </summary>
-        /// <param name="handbrakePath">Path to HandBrake CLI executeable. Defaults to 'HandBrakeCLI'</param>
-        public HandbrakeCli(string handbrakePath = "HandBrakeCLI")
+        /// <param name="handbrakePath">Path to HandBrake CLI executeable. Defaults to './HandBrakeCLI'</param>
+        public Handbrake(string handbrakePath = "./HandBrakeCLI")
         {
             _hbCliPath = handbrakePath;
         }
@@ -36,19 +36,19 @@ namespace HandbrakeCLIwrapper
         /// <summary>
         /// The status of the converter and the on ongoing conversion is accessible here.
         /// </summary>
-        public ConversionStatus Status { get; } = new ConversionStatus();
+        public HandbrakeConversionStatus Status { get; } = new HandbrakeConversionStatus();
 
         /// <summary>
         /// Starts converting the input file using the configuration passed for HandBrake CLI
         /// </summary>
-        /// <param name="config">The configuration builder for the conversion</param>
+        /// <param name="config">The configuration for the conversion</param>
         /// <param name="inputFile">The path of the input file</param>
         /// <param name="outputDirectory">The directory to place the output file</param>
         /// <param name="outputFilename">The filename to give the output file. Defaults to the same as input filename. Automatically sets extension</param>
         /// <param name="overwriteExisting">Whether to overwrite existing files in outputDirectory</param>
         /// <param name="removeOriginalAfterSuccessful">Whether to remove the input file after successful transcoding</param>
         /// <returns>Awaitable task for the conversion</returns>
-        public async Task Transcode(HandbrakeCliConfigBuilder config, string inputFile, string outputDirectory,
+        public async Task Transcode(HandbrakeConfiguration config, string inputFile, string outputDirectory,
             string outputFilename = null, bool overwriteExisting = false, bool removeOriginalAfterSuccessful = false)
         {
             if (!File.Exists(inputFile))
@@ -68,7 +68,13 @@ namespace HandbrakeCLIwrapper
             if (File.Exists(outputFilename) && !overwriteExisting) 
                 throw new HandbrakeCliWrapperException($"The file '{outputFilename}' already exists. Set overwriteExisting to true to overwrite");
 
-            var arg = $"-i \"{inputFile}\" -o \"{outputFilename}\" " + config.Build();
+            var arg = $"-i \"{inputFile}\" -o \"{outputFilename}\" {config}";
+            
+            if (!File.Exists(_hbCliPath))
+            {
+                throw new FileNotFoundException("No HandbrakeCLI executable found", _hbCliPath);
+            }
+            
             _process = new Process
             {
                 StartInfo = new ProcessStartInfo(_hbCliPath, arg)
@@ -86,6 +92,7 @@ namespace HandbrakeCLIwrapper
             {
                 throw new HandbrakeCliWrapperException("An error occured when starting the HandbrakeCLI process. See inner exception", e);
             }
+            
             _process = null;
             if (success)
             {
@@ -103,7 +110,9 @@ namespace HandbrakeCLIwrapper
                 }
             }
             else
+            {
                 ErrorTranscoding();
+            }
         }
 
         /// <summary>
@@ -124,9 +133,7 @@ namespace HandbrakeCLIwrapper
             {
                 File.Delete(_out);
             }
-            catch
-            {
-            }
+            catch { }
         }
 
         /// <summary>
@@ -142,45 +149,34 @@ namespace HandbrakeCLIwrapper
         /// </summary>
         public event EventHandler<HandbrakeTranscodingEventArgs> TranscodingError;
 
-        private void StartedTranscoding(string inputFile, string outputFilename)
+        private void SetStatus(string inputFile = "", string outputFilename = "")
         {
             _out = outputFilename;
-            Status.Converting = true;
-            Status.InputFile = Path.GetFileName(inputFile);
-            Status.OutputFile = Path.GetFileName(outputFilename);
+            Status.Converting = !string.IsNullOrEmpty(inputFile);
+            Status.InputFile = !string.IsNullOrEmpty(inputFile) ? Path.GetFileName(inputFile) : "";
+            Status.OutputFile = !string.IsNullOrEmpty(outputFilename) ? Path.GetFileName(outputFilename) : "";
             Status.Percentage = 0;
             Status.CurrentFps = 0;
             Status.AverageFps = 0;
             Status.Estimated = TimeSpan.Zero;
+        }
+        
+        private void StartedTranscoding(string inputFile, string outputFile)
+        {
+            SetStatus(inputFile, outputFile);
             TranscodingStarted?.Invoke(this, new HandbrakeTranscodingEventArgs(Status.InputFile));
         }
 
         private void DoneTranscoding()
         {
-            _out = "";
-            var inp = Status.InputFile;
-            Status.Converting = false;
-            Status.InputFile = "";
-            Status.OutputFile = "";
-            Status.Percentage = 0;
-            Status.CurrentFps = 0;
-            Status.AverageFps = 0;
-            Status.Estimated = TimeSpan.Zero;
-            TranscodingCompleted?.Invoke(this, new HandbrakeTranscodingEventArgs(inp));
+            SetStatus();
+            TranscodingCompleted?.Invoke(this, new HandbrakeTranscodingEventArgs(Status.InputFile));
         }
 
         private void ErrorTranscoding()
         {
-            _out = "";
-            var inp = Status.InputFile;
-            Status.Converting = false;
-            Status.InputFile = "";
-            Status.OutputFile = "";
-            Status.Percentage = 0;
-            Status.CurrentFps = 0;
-            Status.AverageFps = 0;
-            Status.Estimated = TimeSpan.Zero;
-            TranscodingError?.Invoke(this, new HandbrakeTranscodingEventArgs(inp));
+            SetStatus();
+            TranscodingError?.Invoke(this, new HandbrakeTranscodingEventArgs(Status.InputFile));
         }
 
         private void OnOutputDataReceived(object sender, DataReceivedEventArgs dataReceivedEventArgs)

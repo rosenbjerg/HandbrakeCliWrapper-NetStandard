@@ -5,7 +5,7 @@ using System.Globalization;
 using System.IO;
 using System.Linq;
 using System.Threading.Tasks;
-using HandbrakeCLIwrapper;
+using HandbrakeCliWrapper;
 
 namespace VideoConverter
 {
@@ -14,38 +14,32 @@ namespace VideoConverter
         private static int _total;
         private static int _current;
 
-        static void Main(string[] args)
+        static async Task Main(string[] args)
         {
-            var exts = new []{".mkv", ".avi", }.ToHashSet();
+            var extensions = new []{".mkv", ".avi", }.ToHashSet();
             var input = args[0];
             var files = Directory.GetFiles(input, "*.*", SearchOption.AllDirectories)
-                .Where(f => exts.Contains(Path.GetExtension(f))).ToList();
+                .Where(f => extensions.Contains(Path.GetExtension(f))).ToList();
             var output = args[1];
-            Run(files, output);
-
-            Console.ReadLine();
+            await Run(files, output);
+            Console.WriteLine("Done!");
         }
 
-        private static async void Run(List<string> files, string output)
+        private static async Task Run(IReadOnlyCollection<string> files, string output)
         {
-            if (!File.Exists("./HandbrakeCLI.exe"))
-            {
-                throw new Exception("Missing ./HandbrakeCLI.exe");
-            }
-            var hb = new HandbrakeCli("./HandbrakeCLI.exe");
+            var hb = new Handbrake("./HandbrakeCLI.exe");
             _total = files.Count;
             _current = 0;
             PrintStatus(hb);
-            var config = new HandbrakeCliConfigBuilder();
+            var config = new HandbrakeConfiguration();
             foreach (var file in files)
             {
                 await hb.Transcode(config, file, output, overwriteExisting: true);
                 _current++;
             }
         }
-        
 
-        static async void PrintStatus(HandbrakeCli hb) 
+        private static async void PrintStatus(Handbrake hb) 
         {
             while (true)
             {
