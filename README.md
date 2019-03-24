@@ -1,6 +1,6 @@
 # HandbrakeCliWrapper for NetStandard
 
-This is a basic utility that allows easy use of HandBrakeCLI from C# without having to deal with learning the command line interface. It supports the most common functions, and more are difficult to add.
+This is a basic utility that allows easy use of HandBrakeCLI from C# without having to deal with learning the command line interface. It supports the most common functions, and more are easy to add.
 
 ## How to use:
 
