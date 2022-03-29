@@ -12,23 +12,23 @@ Before you can transcode anything, however, you need to build your config file. 
 
 For example, to encode video to be as compatible as possible for PLeX, I use the following settings:
 
-```
+````csharp
 HandbrakeCliConfigBuilder config = new HandbrakeCliConfigBuilder();
 config.Encoder = HandbrakeCLIwrapper.Encoder.x264;
 config.AudioCopyMask.Add(AudioCopyMask.aac);
 config.AudioEncoder = AudioEncoder.av_aac;
 config.Format = Format.av_mp4;
 config.WebOptimize = true;
-```
+````
 
 the last step to setting up ANY encoding, is running `config.Build()` - You MUST do this, or the library will use the default settings.
 
 To then convert;
 
-```
+````csharp
 HandbrakeCli conv = new HandbrakeCli();
 conv.Transcode(config, <input file path>, <output folder>, <optional output filename>, <optional overwrite output>, <optional remove source file after conversion>
-```
+````
 
 You can also track your conversion progress by simply checking `conv.Status.Percentage`
 
