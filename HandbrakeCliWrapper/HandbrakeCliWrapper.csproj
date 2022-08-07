@@ -1,7 +1,7 @@
 ﻿<Project Sdk="Microsoft.NET.Sdk">
 
   <PropertyGroup>
-    <TargetFramework>netstandard2.0</TargetFramework>
+    <TargetFramework>netstandard2.1</TargetFramework>
     <AssemblyName>HandbrakeCliWrapper</AssemblyName>
     <RootNamespace>HandbrakeCliWrapper</RootNamespace>
     <PackageId>HandbrakeCliWrapper</PackageId>
@@ -11,15 +11,18 @@
     <Product>A Handbrake CLI wrapper</Product>
     <Description>HandbrakeCLI wrapper with awaitable asyncronous conversion. The status of a conversion is made available</Description>
     <Copyright>2019</Copyright>
-    <PackageLicenseUrl>https://github.com/rosenbjerg/HandbrakeCliWrapper-NetStandard/blob/master/LICENSE</PackageLicenseUrl>
+    <License>https://github.com/rosenbjerg/HandbrakeCliWrapper-NetStandard/blob/master/LICENSE</License>
     <PackageProjectUrl>https://github.com/rosenbjerg/HandbrakeCliWrapper-NetStandard</PackageProjectUrl>
-    <Version>1.0.1</Version>
-    <PackageReleaseNotes>Changed API</PackageReleaseNotes>
+    <Version>1.0.2.0</Version>
+    <PackageReleaseNotes>Changed API
+Added remaining parameters</PackageReleaseNotes>
     <PackageVersion>2.0.0</PackageVersion>
     <Title>HandbrakeCLI wrapper</Title>
     <RepositoryUrl>https://github.com/rosenbjerg/HandbrakeCliWrapper-NetStandard</RepositoryUrl>
     <RepositoryType>GitHub</RepositoryType>
     <PackageTags>handbrake</PackageTags>
+    <AssemblyVersion>1.0.2.0</AssemblyVersion>
+    <FileVersion>1.0.2.0</FileVersion>
   </PropertyGroup>
 
   <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Debug|AnyCPU'">

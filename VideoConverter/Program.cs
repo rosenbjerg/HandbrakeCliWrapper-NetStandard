@@ -16,6 +16,10 @@ namespace VideoConverter
 
         static async Task Main(string[] args)
         {
+            var a= new HandbrakeConfiguration {
+                
+            };
+
             var extensions = new []{".mkv", ".avi", }.ToHashSet();
             var input = args[0];
             var files = Directory.GetFiles(input, "*.*", SearchOption.AllDirectories)

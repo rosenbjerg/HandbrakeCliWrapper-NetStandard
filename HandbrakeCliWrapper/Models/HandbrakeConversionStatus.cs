@@ -1,9 +1,7 @@
 ﻿using System;
 
-namespace HandbrakeCliWrapper
-{
-    public class HandbrakeConversionStatus
-    {
+namespace HandbrakeCliWrapper.Models {
+    public class HandbrakeConversionStatus {
         /// <summary>
         /// Whether a conversion is going on at the moment
         /// </summary>
@@ -33,8 +31,7 @@ namespace HandbrakeCliWrapper
         /// </summary>
         public TimeSpan Estimated { get; internal set; }
 
-        public override string ToString()
-        {
+        public override string ToString() {
             if (!Converting)
                 return "Idle";
             return

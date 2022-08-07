@@ -5,10 +5,22 @@ This is a basic utility that allows easy use of HandBrakeCLI from C# without hav
 ## How to use:
 
 Either clone this repo and add it to your project, or download the package from NuGet.
-Once you've added it to your project, to use it add `using HandbrakeCLIwrapper;` to your usings, then depending on what you want to do, you have a couple options.
+Once you've added it to your project, add the following lines to the using statements:
+
+```
+using HandbrakeCliWrapper;
+using HandbrakeCliWrapper.Enums;
+using HandbrakeCliWrapper.Models;
+```
+
+Then depending on what you want to do, you have a couple options:
 
 You can subscribe to some events from the library - `TranscodingStarted, TranscodingCompleted, and Transcoding Error`
 Before you can transcode anything, however, you need to build your config file. All options have defaults that work, but for your use case you should finetune them.
+
+The parameters added in this project were taken from the Handbrake CLI documentation
+Refer to handbrake documentation for further details
+https://handbrake.fr/docs/en/1.5.0/cli/command-line-reference.html
 
 For example, to encode video to be as compatible as possible for PLeX, I use the following settings:
 
@@ -21,9 +33,7 @@ config.Format = Format.av_mp4;
 config.WebOptimize = true;
 ```
 
-the last step to setting up ANY encoding, is running `config.Build()` - You MUST do this, or the library will use the default settings.
-
-To then convert;
+To then convert:
 
 ```
 HandbrakeCli conv = new HandbrakeCli();
